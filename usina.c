@@ -1,19 +1,55 @@
-/*******************************************************************
+/***********************************************************************
  * Projeto Final - Estrutura de Dados
  *
- * Proejto 4 - Otimizador de Despacho de Carga
+ * Projeto 4 - Otimizador de Despacho de Carga
+ * Versão 2.0
  *
  * Arquivo: usina.c
- ********************************************************************/
+ ***********************************************************************/
 
 #include "usina.h"
 
-/********************************************************************
- * Função: criar_no
- *
- * Objetivo:
- * Criar um novo nó da árvore e armazenar os dados da usina.
- ********************************************************************/
+/***********************************************************************
+ * Funções auxiliares
+ ***********************************************************************/
+
+void limpar_tela(void)
+{
+#ifdef _WIN32
+    system("cls");
+#else
+    system("clear");
+#endif
+}
+
+void pausar(void)
+{
+    printf("\nPressione ENTER para continuar...");
+    getchar();
+}
+
+void menu(void)
+{
+    printf("\n");
+    printf("=====================================================\n");
+    printf("      OTIMIZADOR DE DESPACHO DE CARGA - V2.0\n");
+    printf("=====================================================\n");
+    printf("1 - Cadastrar usina\n");
+    printf("2 - Buscar usina\n");
+    printf("3 - Listar usinas\n");
+    printf("4 - Ativar usina\n");
+    printf("5 - Desativar usina\n");
+    printf("6 - Estatisticas\n");
+    printf("7 - Solicitar despacho\n");
+    printf("0 - Sair\n");
+    printf("=====================================================\n");
+    printf("Opcao: ");
+}
+
+/***********************************************************************
+ * Criação do nó
+ ***********************************************************************/
+
 NoABB *criar_no(Usina u)
 {
     NoABB *novo;
@@ -33,14 +69,10 @@ NoABB *criar_no(Usina u)
     return novo;
 }
 
+/***********************************************************************
+ * Inserção na ABB
+ ***********************************************************************/
 
-/********************************************************************
- * Função: inserir_abb
- *
- * Objetivo:
- * Inserir uma usina na Árvore Binária de Busca utilizando
- * o código da usina como chave.
- ********************************************************************/
 void inserir_abb(NoABB **raiz, Usina u)
 {
     if (*raiz == NULL)
@@ -53,19 +85,20 @@ void inserir_abb(NoABB **raiz, Usina u)
     {
         inserir_abb(&((*raiz)->esq), u);
     }
-    else
+    else if (u.codigo > (*raiz)->dados.codigo)
     {
         inserir_abb(&((*raiz)->dir), u);
     }
+    else
+    {
+        printf("\nCodigo %d ja cadastrado.\n", u.codigo);
+    }
 }
 
+/***********************************************************************
+ * Busca por código
+ ***********************************************************************/
 
-/********************************************************************
- * Função: buscar_abb
- *
- * Objetivo:
- * Localizar uma usina utilizando seu código.
- ********************************************************************/
 NoABB *buscar_abb(NoABB *raiz, int codigo)
 {
     if (raiz == NULL)
@@ -86,13 +119,52 @@ NoABB *buscar_abb(NoABB *raiz, int codigo)
     return buscar_abb(raiz->dir, codigo);
 }
 
+/***********************************************************************
+ * Impressão de uma usina
+ ***********************************************************************/
 
-/********************************************************************
- * Função: liberar_abb
- *
- * Objetivo:
- * Liberar toda a memória utilizada pela árvore.
- ********************************************************************/
+void imprimir_usina(Usina u)
+{
+    printf("---------------------------------------------\n");
+    printf("Codigo      : %d\n", u.codigo);
+    printf("Tipo        : %s\n", u.tipo);
+    printf("Capacidade  : %.2f MW\n", u.capacidade_mw);
+    printf("Custo       : R$ %.2f / MWh\n", u.custo_mwh);
+
+    if (u.status == ATIVA)
+    {
+        printf("Status      : ATIVA\n");
+    }
+    else
+    {
+        printf("Status      : INATIVA\n");
+    }
+
+    printf("---------------------------------------------\n");
+}
+
+/***********************************************************************
+ * Listagem em ordem crescente de código
+ ***********************************************************************/
+
+void listar_usinas(NoABB *raiz)
+{
+    if (raiz == NULL)
+    {
+        return;
+    }
+
+    listar_usinas(raiz->esq);
+
+    imprimir_usina(raiz->dados);
+
+    listar_usinas(raiz->dir);
+}
+
+/***********************************************************************
+ * Liberação da árvore
+ ***********************************************************************/
+
 void liberar_abb(NoABB *raiz)
 {
     if (raiz == NULL)
@@ -107,12 +179,101 @@ void liberar_abb(NoABB *raiz)
     free(raiz);
 }
 
-/********************************************************************
- * Função: contar_ativas
- *
- * Objetivo:
- * Contar quantas usinas estão ativas na árvore.
- ********************************************************************/
+/***********************************************************************
+ * Cadastro de Usina
+ ***********************************************************************/
+
+Usina cadastrar_usina(void)
+{
+    Usina nova;
+
+    printf("\n========== CADASTRO DE USINA ==========\n");
+
+    printf("Codigo: ");
+    scanf("%d", &nova.codigo);
+    getchar();
+
+    printf("Tipo: ");
+    fgets(nova.tipo, MAX_TIPO, stdin);
+
+    /* Remove o '\n' do fgets */
+    nova.tipo[strcspn(nova.tipo, "\n")] = '\0';
+
+    printf("Capacidade (MW): ");
+    scanf("%f", &nova.capacidade_mw);
+
+    printf("Custo (R$/MWh): ");
+    scanf("%f", &nova.custo_mwh);
+
+    printf("Status (1 = Ativa | 0 = Inativa): ");
+    scanf("%d", &nova.status);
+    getchar();
+
+    return nova;
+}
+
+/***********************************************************************
+ * Ativar Usina
+ ***********************************************************************/
+
+void ativar_usina(NoABB *raiz, int codigo)
+{
+    NoABB *aux;
+
+    aux = buscar_abb(raiz, codigo);
+
+    if (aux == NULL)
+    {
+        printf("\nUsina nao encontrada.\n");
+        return;
+    }
+
+    aux->dados.status = ATIVA;
+
+    printf("\nUsina ativada com sucesso.\n");
+}
+
+/***********************************************************************
+ * Desativar Usina
+ ***********************************************************************/
+
+void desativar_usina(NoABB *raiz, int codigo)
+{
+    NoABB *aux;
+
+    aux = buscar_abb(raiz, codigo);
+
+    if (aux == NULL)
+    {
+        printf("\nUsina nao encontrada.\n");
+        return;
+    }
+
+    aux->dados.status = INATIVA;
+
+    printf("\nUsina desativada com sucesso.\n");
+}
+
+/***********************************************************************
+ * Conta todas as usinas
+ ***********************************************************************/
+
+int contar_total(NoABB *raiz)
+{
+    if (raiz == NULL)
+    {
+        return 0;
+    }
+
+    return 1
+        + contar_total(raiz->esq)
+        + contar_total(raiz->dir);
+}
+
+/***********************************************************************
+ * Conta apenas usinas ativas
+ ***********************************************************************/
+
 int contar_ativas(NoABB *raiz)
 {
     if (raiz == NULL)
@@ -120,21 +281,137 @@ int contar_ativas(NoABB *raiz)
         return 0;
     }
 
-    return (raiz->dados.status == 1)
-           + contar_ativas(raiz->esq)
-           + contar_ativas(raiz->dir);
+    return (raiz->dados.status == ATIVA)
+        + contar_ativas(raiz->esq)
+        + contar_ativas(raiz->dir);
 }
 
+/***********************************************************************
+ * Conta apenas usinas inativas
+ ***********************************************************************/
 
-/********************************************************************
- * Função: copiar_ativas_para_vetor
- *
- * Objetivo:
- * Percorrer a árvore e copiar todas as usinas ativas
- * para um vetor.
- ********************************************************************/
+int contar_inativas(NoABB *raiz)
+{
+    if (raiz == NULL)
+    {
+        return 0;
+    }
+
+    return (raiz->dados.status == INATIVA)
+        + contar_inativas(raiz->esq)
+        + contar_inativas(raiz->dir);
+}
+
+/***********************************************************************
+ * Soma toda a capacidade instalada
+ ***********************************************************************/
+
+float capacidade_total(NoABB *raiz)
+{
+    if (raiz == NULL)
+    {
+        return 0.0f;
+    }
+
+    return raiz->dados.capacidade_mw
+        + capacidade_total(raiz->esq)
+        + capacidade_total(raiz->dir);
+}
+
+/***********************************************************************
+ * Soma apenas capacidade disponível
+ ***********************************************************************/
+
+float capacidade_ativa(NoABB *raiz)
+{
+    float capacidade = 0.0f;
+
+    if (raiz == NULL)
+    {
+        return 0.0f;
+    }
+
+    if (raiz->dados.status == ATIVA)
+    {
+        capacidade = raiz->dados.capacidade_mw;
+    }
+
+    return capacidade
+        + capacidade_ativa(raiz->esq)
+        + capacidade_ativa(raiz->dir);
+}
+
+/***********************************************************************
+ * Soma os custos das usinas
+ ***********************************************************************/
+
+float soma_custos(NoABB *raiz)
+{
+    if (raiz == NULL)
+    {
+        return 0.0f;
+    }
+
+    return raiz->dados.custo_mwh
+        + soma_custos(raiz->esq)
+        + soma_custos(raiz->dir);
+}
+
+/***********************************************************************
+ * Exibe estatísticas
+ ***********************************************************************/
+
+void mostrar_estatisticas(NoABB *raiz)
+{
+    int total;
+    int ativas;
+    int inativas;
+
+    float capacidadeInstalada;
+    float capacidadeDisponivel;
+    float mediaCusto;
+
+    total = contar_total(raiz);
+    ativas = contar_ativas(raiz);
+    inativas = contar_inativas(raiz);
+
+    capacidadeInstalada = capacidade_total(raiz);
+    capacidadeDisponivel = capacidade_ativa(raiz);
+
+    if (total > 0)
+    {
+        mediaCusto = soma_custos(raiz) / total;
+    }
+    else
+    {
+        mediaCusto = 0.0f;
+    }
+
+    printf("\n=========================================\n");
+    printf("          ESTATISTICAS DO SISTEMA\n");
+    printf("=========================================\n");
+
+    printf("Total de usinas...........: %d\n", total);
+    printf("Usinas ativas............: %d\n", ativas);
+    printf("Usinas inativas..........: %d\n", inativas);
+
+    printf("Capacidade instalada.....: %.2f MW\n",
+           capacidadeInstalada);
+
+    printf("Capacidade disponivel....: %.2f MW\n",
+           capacidadeDisponivel);
+
+    printf("Custo medio..............: R$ %.2f / MWh\n",
+           mediaCusto);
+
+    printf("=========================================\n");
+}
+
+/***********************************************************************
+ * Copia as usinas ativas para um vetor
+ ***********************************************************************/
 void copiar_ativas_para_vetor(NoABB *raiz,
-                              Usina *vetor,
+                              Usina vetor[],
                               int *indice)
 {
     if (raiz == NULL)
@@ -142,33 +419,29 @@ void copiar_ativas_para_vetor(NoABB *raiz,
         return;
     }
 
-    /* Percorre esquerda */
     copiar_ativas_para_vetor(raiz->esq, vetor, indice);
 
-    /* Copia apenas usinas ativas */
-    if (raiz->dados.status == 1)
+    if (raiz->dados.status == ATIVA)
     {
         vetor[*indice] = raiz->dados;
         (*indice)++;
     }
 
-    /* Percorre direita */
     copiar_ativas_para_vetor(raiz->dir, vetor, indice);
 }
 
-
-/********************************************************************
- * Função: quicksort_usinas
- *
- * Objetivo:
- * Ordenar o vetor pelo menor custo de geração.
- ********************************************************************/
-void quicksort_usinas(Usina *vetor, int inicio, int fim)
+/***********************************************************************
+ * Quicksort
+ ***********************************************************************/
+void quicksort_usinas(Usina vetor[],
+                      int inicio,
+                      int fim)
 {
     int i;
     int j;
+
     Usina pivo;
-    Usina temp;
+    Usina aux;
 
     i = inicio;
     j = fim;
@@ -189,9 +462,9 @@ void quicksort_usinas(Usina *vetor, int inicio, int fim)
 
         if (i <= j)
         {
-            temp = vetor[i];
+            aux = vetor[i];
             vetor[i] = vetor[j];
-            vetor[j] = temp;
+            vetor[j] = aux;
 
             i++;
             j--;
@@ -209,108 +482,100 @@ void quicksort_usinas(Usina *vetor, int inicio, int fim)
     }
 }
 
-
-/********************************************************************
- * Função: despachar_carga
- *
- * Objetivo:
- * Atender a demanda utilizando primeiro as usinas
- * de menor custo.
- ********************************************************************/
-void despachar_carga(NoABB *raiz, float demanda_solicitada)
+/***********************************************************************
+ * Despacho de carga
+ ***********************************************************************/
+void despachar_carga(NoABB *raiz,
+                     float demanda)
 {
-    int n;
+    int quantidade;
     int indice;
     int i;
 
-    float carga_atual;
-    float custo_total;
+    float cargaAtual;
     float necessidade;
     float geracao;
+    float custoTotal;
 
-    Usina *vetor_ativas;
+    Usina *vetor;
 
-    /* Conta quantas usinas estão ativas */
-    n = contar_ativas(raiz);
+    quantidade = contar_ativas(raiz);
 
-    if (n == 0)
+    if (quantidade == 0)
     {
-        printf("Nenhuma usina ativa disponivel.\n");
+        printf("\nNao existem usinas ativas.\n");
         return;
     }
 
-    /* Aloca o vetor */
-    vetor_ativas = (Usina *) malloc(n * sizeof(Usina));
+    vetor = (Usina *) malloc(sizeof(Usina) * quantidade);
 
-    if (vetor_ativas == NULL)
+    if (vetor == NULL)
     {
-        printf("Erro na alocacao de memoria.\n");
+        printf("\nErro de memoria.\n");
         exit(1);
     }
 
-    /* Copia as usinas para o vetor */
     indice = 0;
 
     copiar_ativas_para_vetor(raiz,
-                             vetor_ativas,
+                             vetor,
                              &indice);
 
-    /* Ordena pelo menor custo */
-    quicksort_usinas(vetor_ativas,
+    quicksort_usinas(vetor,
                      0,
-                     n - 1);
+                     quantidade - 1);
 
-    carga_atual = 0.0;
-    custo_total = 0.0;
+    cargaAtual = 0.0f;
+    custoTotal = 0.0f;
 
-    printf("\n------------------------------------------\n");
-    printf(" DESPACHO DE ENERGIA\n");
-    printf("------------------------------------------\n\n");
+    printf("\n");
+    printf("=====================================================\n");
+    printf("           DESPACHO DE CARGA\n");
+    printf("=====================================================\n");
+    printf("Demanda solicitada : %.2f MW\n\n", demanda);
 
-    for (i = 0; i < n && carga_atual < demanda_solicitada; i++)
+    for (i = 0; i < quantidade && cargaAtual < demanda; i++)
     {
-        necessidade = demanda_solicitada - carga_atual;
+        necessidade = demanda - cargaAtual;
 
-        if (vetor_ativas[i].capacidade_mw > necessidade)
+        if (vetor[i].capacidade_mw >= necessidade)
         {
             geracao = necessidade;
         }
         else
         {
-            geracao = vetor_ativas[i].capacidade_mw;
+            geracao = vetor[i].capacidade_mw;
         }
 
-        carga_atual += geracao;
+        cargaAtual += geracao;
+        custoTotal += geracao * vetor[i].custo_mwh;
 
-        custo_total += geracao * vetor_ativas[i].custo_mwh;
-
-        printf("Usina %d (%s)\n",
-               vetor_ativas[i].codigo,
-               vetor_ativas[i].tipo);
-
-        printf("Geracao : %.2f MW\n", geracao);
-
-        printf("Custo   : R$ %.2f / MWh\n\n",
-               vetor_ativas[i].custo_mwh);
+        printf("------------------------------------------\n");
+        printf("Codigo      : %d\n", vetor[i].codigo);
+        printf("Tipo        : %s\n", vetor[i].tipo);
+        printf("Geracao     : %.2f MW\n", geracao);
+        printf("Custo Unit. : R$ %.2f / MWh\n", vetor[i].custo_mwh);
+        printf("Custo Parc. : R$ %.2f\n",
+               geracao * vetor[i].custo_mwh);
     }
 
-    if (carga_atual < demanda_solicitada)
+    printf("------------------------------------------\n");
+
+    if (cargaAtual >= demanda)
     {
-        printf("------------------------------------------\n");
-        printf("ATENCAO!\n");
-        printf("Nao foi possivel atender toda a demanda.\n");
-        printf("Faltaram %.2f MW.\n",
-               demanda_solicitada - carga_atual);
+        printf("Despacho concluido com sucesso.\n");
     }
     else
     {
-        printf("------------------------------------------\n");
-        printf("Despacho realizado com sucesso.\n");
+        printf("ATENCAO!\n");
+        printf("Nao foi possivel atender toda a demanda.\n");
+        printf("Faltaram %.2f MW\n",
+               demanda - cargaAtual);
     }
 
-    printf("Energia fornecida : %.2f MW\n", carga_atual);
-    printf("Custo total       : R$ %.2f\n", custo_total);
+    printf("\nResumo\n");
+    printf("Energia fornecida : %.2f MW\n", cargaAtual);
+    printf("Custo total       : R$ %.2f\n", custoTotal);
 
-    /* Libera memória */
-    free(vetor_ativas);
+    free(vetor);
 }
