@@ -1,17 +1,20 @@
-/******************************************************************
- * Projeto Final - Estrutura de Dados
+/***********************************************************************
+ * SIGDE - Sistema Inteligente de Gerenciamento e Despacho de Energia
  *
- * Projeto 4 - Otimizador de Despacho de Carga
- * Vers√£o 2.0
+ * Disciplina : Estrutura de Dados
+ * Linguagem  : C
  *
- * Arquivo: usina.h
+ * Arquivo    : usina.h
+ * MÛdulo     : Gerenciamento de Usinas
+ * Vers„o     : 3.0.0
  *
- * Autor: Vicktor Melo
+ * Autor      : Vicktor Melo
  *
- * Descri√ß√£o:
- * Biblioteca principal contendo as estruturas de dados
- * e os prot√≥tipos das fun√ß√µes utilizadas no sistema.
- **********************************************************************/
+ * DescriÁ„o:
+ * Define a estrutura da usina, da ·rvore bin·ria de busca (ABB)
+ * e os protÛtipos das funÁıes respons·veis pelo gerenciamento
+ * das usinas.
+ ***********************************************************************/
 
 #ifndef USINA_H
 #define USINA_H
@@ -20,31 +23,68 @@
 #include <stdlib.h>
 #include <string.h>
 
-/***********************************************************************
- * Constantes
- ***********************************************************************/
-
-#define ATIVA       1
-#define INATIVA     0
-
-#define MAX_TIPO   30
+#include "config.h"
+#include "tipos.h"
+#include "util.h"
 
 /***********************************************************************
- * Estrutura da Usina
+ * ESTRUTURA DA USINA
  ***********************************************************************/
 
 typedef struct
 {
+    /***********************************************************
+     * IDENTIFICA«√O
+     ***********************************************************/
+
     int codigo;
-    char tipo[MAX_TIPO];
-    float capacidade_mw;
+
+    TipoUsina tipo;
+
+    Regiao regiao;
+
+    StatusUsina status;
+
+    /***********************************************************
+     * PRODU«√O
+     ***********************************************************/
+
+    float potencia_instalada;
+
+    float capacidade_disponivel;
+
+    float reservatorio;
+
     float custo_mwh;
-    int status;
+
+    float producao_diaria;
+
+    float producao_mensal;
+
+    /***********************************************************
+     * ESTATÕSTICAS
+     ***********************************************************/
+
+    float energia_total;
+
+    float faturamento_total;
+
+    int despachos;
+
+    int horas_operacao;
+
+    /***********************************************************
+     * GEST√O
+     ***********************************************************/
+
+    Prioridade prioridade;
+
+    char ultima_manutencao[MAX_DATA];
 
 } Usina;
 
 /***********************************************************************
- * N√≥ da √Årvore Bin√°ria de Busca
+ * ¡RVORE BIN¡RIA DE BUSCA
  ***********************************************************************/
 
 typedef struct NoABB
@@ -52,207 +92,87 @@ typedef struct NoABB
     Usina dados;
 
     struct NoABB *esq;
+
     struct NoABB *dir;
 
 } NoABB;
 
 /***********************************************************************
- *====================== √ÅRVORE BIN√ÅRIA ================================
+ * FUN«’ES DA ABB
  ***********************************************************************/
 
-/* Cria um novo n√≥ */
-NoABB *criar_no(Usina u);
+NoABB *criar_no(Usina usina);
 
-/* Insere uma usina */
-void inserir_abb(NoABB **raiz, Usina u);
+void inserir_abb(NoABB **raiz,
+                 Usina usina);
 
-/* Busca por c√≥digo */
-NoABB *buscar_abb(NoABB *raiz, int codigo);
+NoABB *buscar_abb(NoABB *raiz,
+                  int codigo);
 
-/* Libera toda a √°rvore */
-void liberar_abb(NoABB *raiz);
-
-/***********************************************************************
- *====================== LISTAGEM ======================================
- ***********************************************************************/
-
-/* Lista todas as usinas em ordem crescente de c√≥digo */
 void listar_usinas(NoABB *raiz);
 
-/* Imprime uma √∫nica usina */
-void imprimir_usina(Usina u);
-
-/***********************************************************************
- *====================== CADASTRO ======================================
- ***********************************************************************/
-
-/* L√™ os dados digitados pelo usu√°rio */
-Usina cadastrar_usina(void);
-
-/* Ativa uma usina */
-void ativar_usina(NoABB *raiz, int codigo);
-
-/* Desativa uma usina */
-void desativar_usina(NoABB *raiz, int codigo);
-
-/***********************************************************************
- *====================== ESTAT√çSTICAS ==================================
- ***********************************************************************/
-
-/* Conta quantas usinas existem */
-int contar_total(NoABB *raiz);
-
-/* Conta apenas usinas ativas */
-int contar_ativas(NoABB *raiz);
-
-/* Conta apenas usinas inativas */
-int contar_inativas(NoABB *raiz);
-
-/* Soma toda a capacidade instalada */
-float capacidade_total(NoABB *raiz);
-
-/* Soma apenas a capacidade dispon√≠vel */
-float capacidade_ativa(NoABB *raiz);
-
-/* Soma o custo das usinas */
-float soma_custos(NoABB *raiz);
-
-/* Mostra estat√≠sticas */
-void mostrar_estatisticas(NoABB *raiz);
-
-/***********************************************************************
- *====================== VETORES =======================================
- ***********************************************************************/
-
-/* Copia as usinas ativas para um vetor */
-void copiar_ativas_para_vetor(NoABB *raiz,
-                              Usina vetor[],
-                              int *indice);
-
-/***********************************************************************
- *====================== ORDENA√á√ÉO =====================================
- ***********************************************************************/
-
-/* Quicksort */
-void quicksort_usinas(Usina vetor[],
-                      int inicio,
-                      int fim);
-
-/***********************************************************************
- *====================== DESPACHO ======================================
- ***********************************************************************/
-
-/* Realiza o despacho de energia */
-void despachar_carga(NoABB *raiz,
-                     float demanda);
-
-/***********************************************************************
- *====================== MENU ==========================================
- ***********************************************************************/
-
-/* Exibe o menu principal */
-void menu(void);
-
-/* Aguarda o usu√°rio pressionar ENTER */
-void pausar(void);
-
-/* Limpa a tela */
-void limpar_tela(void);
-
-#endif*
- 
- /***********************************************************************
- * Projeto Final - Estrutura de Dados
- *
- * Projeto 4 - Otimizador de Despacho de Carga
- *
- * Arquivo: usina.h
- *
- * Descri√ß√£o:
- * Declara√ß√£o das estruturas de dados e prot√≥tipos das fun√ß√µes
- * utilizadas no projeto.
- ********************************************************************/
-
-#ifndef USINA_H
-#define USINA_H
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-
-/********************************************************************
- * Estrutura que representa uma usina geradora de energia
- ********************************************************************/
-typedef struct
-{
-    int codigo;
-    char tipo[30];
-    float capacidade_mw;
-    float custo_mwh;
-    int status;          /* 1 = Ativa | 0 = Inativa */
-
-} Usina;
-
-
-/********************************************************************
- * N√≥ da √Årvore Bin√°ria de Busca
- ********************************************************************/
-typedef struct NoABB
-{
-    Usina dados;
-
-    struct NoABB *esq;
-    struct NoABB *dir;
-
-} NoABB;
-
-
-/********************************************************************
- * Fun√ß√µes da √Årvore Bin√°ria de Busca
- ********************************************************************/
-
-/* Cria um novo n√≥ */
-NoABB *criar_no(Usina u);
-
-/* Insere uma usina na ABB */
-void inserir_abb(NoABB **raiz, Usina u);
-
-/* Busca uma usina pelo c√≥digo */
-NoABB *buscar_abb(NoABB *raiz, int codigo);
-
-/* Libera toda a mem√≥ria da ABB */
 void liberar_abb(NoABB *raiz);
 
+/***********************************************************************
+ * CADASTRO
+ ***********************************************************************/
 
-/********************************************************************
- * Fun√ß√µes auxiliares
- ********************************************************************/
+Usina cadastrar_usina(NoABB *raiz);
 
-/* Conta quantas usinas est√£o ativas */
-int contar_ativas(NoABB *raiz);
+void editar_usina(NoABB *raiz);
 
-/* Copia as usinas ativas para um vetor */
-void copiar_ativas_para_vetor(NoABB *raiz,
-                              Usina *vetor,
-                              int *indice);
+void ativar_usina(NoABB *raiz,
+                  int codigo);
 
+void desativar_usina(NoABB *raiz,
+                     int codigo);
 
-/********************************************************************
- * Ordena√ß√£o
- ********************************************************************/
+/***********************************************************************
+ * CONSULTAS
+ ***********************************************************************/
 
-/* Ordena o vetor de usinas pelo menor custo */
-void quicksort_usinas(Usina *vetor,
-                      int inicio,
-                      int fim);
+int quantidade_usinas(NoABB *raiz);
 
+int quantidade_ativas(NoABB *raiz);
 
-/********************************************************************
- * Fun√ß√£o principal do despacho
- ********************************************************************/
+float potencia_total(NoABB *raiz);
 
-/* Realiza o despacho de energia */
-void despachar_carga(NoABB *raiz,
-                     float demanda_solicitada);
+float capacidade_total_disponivel(NoABB *raiz);
+
+/***********************************************************************
+ * IMPRESS√O
+ ***********************************************************************/
+
+void imprimir_usina(Usina usina);
+
+void imprimir_resumo(Usina usina);
+
+/***********************************************************************
+ * VALIDA«’ES
+ ***********************************************************************/
+
+int codigo_existe(NoABB *raiz,
+                  int codigo);
+
+/***********************************************************************
+ * MANUTEN«√O
+ ***********************************************************************/
+
+void atualizar_manutencao(NoABB *raiz,
+                          int codigo);
+
+void restaurar_capacidade(NoABB *raiz);
+
+/***********************************************************************
+ * ORDENA«√O
+ ***********************************************************************/
+
+/*
+ * Utilizada pelos relatÛrios.
+ */
+
+void copiar_usinas(NoABB *raiz,
+                   Usina vetor[],
+                   int *indice);
 
 #endif
