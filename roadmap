@@ -1,0 +1,369 @@
+*ROADMAP DE EVOLUÇÃO DO SIGDE*
+*Sistema Inteligente de Gerenciamento e Despacho de Energia*
+*Versão Atual: 3.0.0*
+
+Autor:
+Vicktor Melo
+
+*Objetivo*
+
+Este documento apresenta possíveis melhorias e expansões para futuras versões do SIGDE.
+
+As funcionalidades abaixo não são obrigatórias para o funcionamento atual do sistema, porém representam uma evolução natural do projeto.
+
+**VERSÃO 3.1**
+Melhorias de Interface
+Menu colorido
+
+Utilizar cores no terminal para destacar:
+
+menus
+erros
+confirmações
+alertas
+
+Exemplo
+
+VERDE
+Cadastro realizado.
+
+VERMELHO
+Erro.
+
+AMARELO
+Atenção.
+Barra de progresso
+
+Durante o despacho.
+
+Exemplo
+
+Calculando despacho...
+
+█████████████████████ 100%
+Tela inicial
+
+Adicionar uma tela de abertura.
+
+Exemplo
+
+========================================
+      SIGDE
+Sistema Inteligente de Energia
+**Versão 3.1**
+========================================
+**VERSÃO 3.2**
+Persistência
+Banco Binário
+
+Substituir arquivos texto por arquivos binários.
+
+Vantagens
+
+leitura mais rápida
+gravação mais rápida
+menor espaço em disco
+Backup automático
+
+Ao iniciar:
+
+backup_2026_07_08.dat
+Recuperação
+
+Caso o banco seja corrompido:
+
+Restaurar backup automaticamente.
+**VERSÃO 3.3**
+Algoritmo de despacho
+
+Melhorar o algoritmo guloso.
+
+Adicionar:
+
+fator de eficiência
+emissão de CO₂
+custo ambiental
+desgaste operacional
+tempo de partida
+Novo Score
+
+Exemplo
+
+score =
+
+custo
++
+eficiência
++
+prioridade
++
+capacidade
++
+impacto ambiental
+Despacho híbrido
+
+Misturar:
+
+econômico
+ecológico
+balanceado
+automaticamente.
+
+**VERSÃO 3.4**
+Estatísticas
+
+Adicionar indicadores.
+
+Exemplo
+
+Eficiência média
+Tempo médio de operação
+Energia total produzida
+Receita total
+Lucro estimado
+
+Ranking
+Maior produção.
+Maior faturamento.
+Menor custo.
+Maior utilização.
+
+Dashboard
+
+Resumo geral.
+
+Usinas
+███████
+
+Produção
+██████████
+
+Capacidade
+████████
+
+**VERSÃO 3.5**
+
+Histórico
+
+Atualmente grava apenas
+
+demanda
+energia
+custo
+
+Melhorar para armazenar:
+
+Data
+Hora
+Politica
+Usinas utilizadas
+Quantidade
+Energia de cada usina
+Valor individual
+Tempo do despacho
+
+**VERSÃO 3.6**
+
+Tickets
+
+Adicionar
+
+Logo
+Data
+Hora
+Política
+Lista completa
+Assinatura digital
+QR Code
+
+**VERSÃO 3.7**
+
+Pesquisa
+
+Permitir buscar
+Código
+Tipo
+Região
+Prioridade
+Status
+Faixa de custo
+Faixa de potência
+
+**VERSÃO 3.8**
+
+Ordenações
+
+Atualmente
+
+ABB
+QuickSort
+Adicionar
+MergeSort
+HeapSort
+Selection
+Insertion
+ShellSort
+
+Comparar desempenho entre algoritmos.
+
+**VERSÃO 4.0*
+
+Estruturas de Dados
+
+Adicionar novas estruturas.
+
+Fila
+Despachos pendentes
+Pilha
+Desfazer operações
+Lista Encadeada
+Histórico
+Tabela Hash
+Busca instantânea
+Árvore AVL
+ABB balanceada
+Árvore Rubro-Negra
+
+Busca O(log n)
+
+**VERSÃO 4.1**
+
+Segurança
+
+Adicionar
+Senha
+Usuários
+Perfis
+Administrador
+Operador
+Visitante
+Log completo
+
+Registrar
+login
+logout
+alterações
+cadastros
+despachos
+remoções
+
+**VERSÃO 4.2**
+Simulação
+
+Modo simulador.
+
+Exemplo
+
+Simular consumo de uma cidade.
+Adicionar falhas.
+Adicionar apagões.
+Adicionar manutenção.
+
+Adicionar aumento de demanda.
+
+**VERSÃO 4.3**
+Inteligência
+
+Criar recomendações.
+
+Exemplo
+A usina 12 deveria entrar primeiro.
+A usina 8 está sobrecarregada.
+
+Sugere manutenção.
+
+Sugere troca da política.
+
+**VERSÃO 4.4**
+Exportação
+
+Exportar
+
+TXT
+CSV
+JSON
+XML
+PDF
+
+**VERSÃO 5.0**
+Interface Gráfica
+
+Migrar o sistema para interface gráfica.
+
+Possibilidades
+
+Qt
+GTK
+C#
+Java
+Python
+Electron
+
+Dashboard
+
+Mostrar
+Mapa
+Usinas
+
+Gráficos
+Alertas
+
+Indicadores
+Tempo real
+
+Melhorias de Código
+
+Padronizar ainda mais:
+
+comentários
+identação
+nomes de funções
+mensagens
+logs
+validações
+tratamento de erros
+Melhorias de Performance
+evitar buscas repetidas na ABB
+diminuir gravações em disco
+cache de estatísticas
+carregamento incremental
+otimização do QuickSort
+Melhorias Acadêmicas
+
+Adicionar no relatório final:
+
+Diagrama de Classes
+Diagrama da ABB
+Fluxograma
+Casos de Uso
+DER
+Complexidade dos algoritmos
+Análise Big-O
+Manual do usuário
+Manual técnico
+Estado Atual do Projeto
+Funcionalidades Implementadas
+
+✔ Cadastro de usinas
+✔ Edição
+✔ Ativação
+✔ Desativação
+✔ ABB
+✔ Busca
+✔ Persistência em arquivos
+✔ Relatórios
+✔ Estatísticas
+✔ Algoritmo Guloso
+✔ Quatro políticas de despacho
+✔ Histórico
+✔ Tickets
+✔ Logs
+✔ QuickSort
+✔ Organização modular
+✔ Documentação dos módulos
+
+Considerações Finais
+
+O SIGDE encontra-se em uma versão estável (3.0.0), atendendo aos requisitos da disciplina de Programação II. O projeto foi desenvolvido com arquitetura modular, permitindo evolução incremental sem necessidade de reescrever sua base. As melhorias propostas neste roadmap estabelecem um plano de evolução que abrange desempenho, segurança, usabilidade, inteligência operacional e escalabilidade, podendo servir de base para versões futuras em contextos acadêmicos ou profissionais.
+
+Na minha avaliação do projeto como um todo, ele está em um nível acima do que normalmente se espera em uma disciplina de Programação II. Você aplicou corretamente conceitos de modularização, tipos abstratos, árvore binária de busca, ordenação, persistência, enumerações, separação em arquivos .h/.c e documentação consistente. Além disso, a arquitetura foi organizada pensando em extensibilidade, o que facilita futuras implementações. Para um projeto de graduação, é um trabalho sólido e bem estruturado
