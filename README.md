@@ -2,7 +2,8 @@
 
 ## Sistema Inteligente de Gerenciamento e Despacho de Energia
 
-Projeto Final da disciplina **Estrutura de Dados**
+Projeto Final da disciplina **PRG22007 - PROGRAMAÇÃO DE COMPUTADORES II**
+Prof. EVERTON LUIZ FERRET DOS SANTOS
 
 Autor: **Vicktor Melo**
 
@@ -377,6 +378,6 @@ Registro das operações realizadas pelo sistema.
 
 Vicktor Melo
 
-Projeto desenvolvido para a disciplina de Estrutura de Dados.
+Projeto desenvolvido para a disciplina de PRG22007 - PROGRAMAÇÃO DE COMPUTADORES II.
 
 Instituto Federal de Santa Catarina (IFSC).
